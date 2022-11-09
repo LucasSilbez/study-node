@@ -1,0 +1,1460 @@
+01 - Visão geral de funcionamento do node
+
+JavaScript funcionava apenas no navegador, com o node posso executar JavaScript no servidor e usa-lo no backend
+
+node: comando que posso executar no terminal do windows e em seguida posso escrever codigos JavaScript
+
+Existe codigos javascript em que não é possível  utilizar no backend, por exemplo window e document
+
+Também existe codigos javascript que podem ser usados apenas no backend, por exemplo o comando:
+process: executa uma serie de informações referente ao projeto atual
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+
+02 - Instalando node
+
+Ao instalar o node é recomentado sempre instalar a LTS, onde já é a versão estavel com problemas corrigido
+
+node -v: informa se o node esta instalado e qual sua versão
+
+npm --version: informa a versão do npm (package)
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+
+03 - Criando primeiro projeto
+
+npm init: cria o projeto node, com um package.json
+
+node public/index.js: exemplo de como executar um projeto node
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+
+04 - Instalando o typescript no projeto
+
+tsc --init
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+
+05 - Configurando typescript
+
+No tsconfig.json é necessário informar que trata-se de um projeto es6 (ecmascript 6)
+
+Descomentar o campo "moduleResolution" 
+
+No campo rootDir informar a pasta src e no campo outDir informar a pasta public
+
+npm install --save-dev @types/node: Comando para instalar no projeto uma biblioteca que irá identificar que trata-se de um projeto node e ajudar no auto complete das tags
+
+pasta node_modules contem as bibliotecas que foi baixada para ser utilizado, costuma ser a pasta mais pesada e não deve ser mexida
+
+npm install: instala novamente a pasta node_modules se necessário
+
+tsc -w: what mode, ficará monitorando meu arquivo typescript e qualquer alteração ao salvar já irá salvar no meu arquivo da pasta public
+
+É recomendado que seja criando um terminal para que seja usado apenas para o what mode, e outro onde executo o restante dos comandos necessários durante o desenvolvimento
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+
+06 - Script do package.json
+
+No arquivo package.json dentro do objeto "scripts", posso criar atalhos para o terminal, conforme exemplo abaixo:
+
+"start": "node public/index.js"
+
+Acima, criei um atalho chamado start, onde ele irá executar o comando "node public/index.js"
+
+Para usar o atalho basta executar o comando npm run + nome do atalho, exemplo: npm run start
+
+
+--------------------------------------------------------------------------------------------------------------------------------
+
+
+07 - Entendendo import/export em commonJS
+
+É usado caso seja necessário utilizar uma linha de codigo de outro arquivo, onde basicamente no arquivo em que existe essa linha codigo existira um comando para que seja exportado (export) onde podemos entender/traduzir para algo como "habilitado para uso externo caso", estarei dizendo para meu codigo que aquela linha de comando pode ser usada em outros arquivos sem problemas
+
+No exemplo abaixo é criado funções em um arquivo, e dito que pode ser exportado/utilizado externamente através do comando module.exports.nomeDaFunção:
+
+function somar(x: number, y: number): number {
+  return x + y
+}
+function subtrair(x: number, y: number): number {
+  return x - y
+}
+function multiplicar(x: number, y: number): number {
+  return x * y
+}
+
+module.exports.somar = somar
+module.exports.subtrair = subtrair
+module.exports.multiplicar = multiplicar
+
+Abaixo, uma linha de codigo sendo utilizada em um outro suposto arquivo em que está fazendo na verdade a importação do codigo Acima
+
+const Matematica = require('./math')
+
+let n1: number = 10
+let n2: number = 2
+
+console.log(`SOMA: ${Matematica.somar(n1, n2)}`)
+console.log(`SUB: ${Matematica.subtrair(n1, n2)}`)
+console.log(`MULTI: ${Matematica.multiplicar(n1, n2)}`) 
+
+`
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+
+08 - Entendendo import/export em es6
+
+O conceito é o mesmo da aula 07, em forma de commonJS, porém a linha de código é diferente conforme exemplo abaixo, onde basta por um export na frente da linha de codigo que quero deixar disponivel externamente
+
+código sendo exportado:
+
+export function somar(x: number, y: number): number {
+  return x + y
+}
+export function subtrair(x: number, y: number): number {
+  return x - y
+}
+export function multiplicar(x: number, y: number): number {
+  return x * y
+}
+
+Outras forma de exportar com ES6:
+
+export default {
+  somar,
+  subtrair,
+  multiplicar,
+}
+
+codigo sendo importado:
+
+import * as Matematica from './math'
+
+let n1: number = 10
+let n2: number = 2
+
+console.log(`SOMA: ${somar(n1, n2)}`)
+console.log(`SUB: ${subtrair(n1, n2)}`)
+console.log(`MULTI: ${multiplicar(n1, n2)}`) 
+
+`
+
+Obs: caso eu queira importar apenas uma ou algumas funções especificas e não todas, utilizar da seguinte forma:
+import {somar, subtrair} as Matematica from './math'
+
+Obs 2: caso seja exportado através de default, é necessário importar da forma q é usado para importar tudo
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+
+09: Importando arquivos terceiros
+
+É possível importar codigos/bibliotecas de outros lugares, por exemplo do site do npm (node package maneger)
+
+Site: npmjs.com
+
+Para importar uma biblioteca do npm:
+
+npm install validator
+
+Obs: validator é o nome da biblioteca encontrada no site
+
+Para utiliza-la:
+
+import validator from 'validator'
+
+Bonus: insta também a npm install --save-dev @types/validator , uma biblioteca auxiliar a validator onde define types e auto complete. o --save-dev informou que esta sendo instalado algo para usar apenas no ambiente de desenvolvimento
+
+Obs: foco da aula é instalação de biblioteca no geral
+
+no site npm onde busco a biblioteca, quando a mesma se encontra com um icone DT ao lado do nome, significa que ela tem types criados e pode ser interessante instalar os types tbm conforme exemplo da @types/validator acima
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+
+10 - Conhecendo o Nodemon
+
+É uma biblioteca, muito importante para o decorrer do curso, etc
+
+npm install -g nodemon 
+
+Obs: o -g instala ela globalmente
+
+Função do nodemon: ela faz com que sempre que eu modificar o codigo automaticamente será executado, sem a necessidade de toda hora usar o comando node public/index.js (comando para executar) sempre que houve alteração no codigo
+
+No caso o comando será nodemon public/index.js 
+
+Depois disso, esse terminal ficará como uma especie similar ao watch mode, onde sempre que eu salvar o arquivo será executado em tempo real, não preciso fazer nodemon public/index.js de novo
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+
+11 - Usando Nodemon com typescript
+
+A biblioteca ts-node faz com que seja possível executar o arquivo no terminal através de um arquivo typescript, pois sabemos que o typescript só roda no ambiente de desenvolvimento então para executar a aplicação é necessário converter para javascript e ai sim executar, sendo necessário converterpa public mesmo que para testes, e isso é quase que testar em produção oq n é bom por motivos obvios
+
+a ts-node cria e executa um arquivo javascript com base no arquivo typescript por baixo dos panos, apenas para que seja mais dinamico para o desenvolvimento (ele não cria um arquivo js visivel)
+
+Comando para instalar:
+
+npm install -g ts-node
+
+Comando para executar:
+
+ts-node src/index.ts
+
+O nodemon tem suporte para essa biblioteca, onde é possível usa-la da seguinte forma:
+
+nodemon src/index.ts
+
+É a mesma forma de usar o nodemon anotada anteriormente, porém agora com o arquivo typescript
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+
+12 - Instalando o Express e criando um servidor
+
+Express é um framework que pode ser usado para criar um servidor local onde pode ser visto através do navegador
+
+Para instalar:
+
+npm install express 
+
+npm install @types/express (para instalar os types)
+
+Para importar:
+
+import express, {Request, Response} from 'express'
+
+Exemplo de uso:
+
+const server = express()
+
+server.get('/', (req: Resquest, res: Response)=>{
+  res.send('Olá Mundo!')
+})
+
+server.listen(3000)
+
+Para rodar o servidor: nodemon src/server.ts
+
+Para acessar no navegador: localhost:3000
+
+Para aplicações node o mais comum é usar a porta 3000
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+
+13 - Teoria das rotas
+
+Rotas são basicamente o local do site em que esta sendo acessado, por exemplo o site g1.globo.com ao acessar, irá para o site inicial, mas se for para o g1.globo.com/contato, irá para um local do site especifico com o conteudo de contato, ou seja, o /algo é uma rota
+
+Existe mais de um tipo de rota conforme exemplo abaixo
+
+g1.globo.com/contato
+g1.globo.com/noticia-sobre-politica
+g1.globo.com/noticia-sobre-futebol
+
+no caso a rota contato é uma rota estatica, onde como o nome ja diz ela é fixa, ja a outras duas rotas são chamadas de rotas dinamicas, onde é uma mesma rota porem dentro dela é criado outras menos, mas trata-se da mesma rota
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+
+14 - Trabalhando com rotas
+
+Existe as rotas GET, POST, PUT e DELETE, sendo GEt e POST os mais utilizados
+
+O metodo GET costuma ser por exemplo, para acessar uma pagina comum ontem irá retornar pro usuário as informações, etc
+
+já o metodo POST faz uma requisição interna, uma requisição que terá por baixo dos panos e não irá apresentar necessariamente pro usuário, por exemplo uma pagina de login onde quando o usuário coloca o usuário e senha, fará uma requisição para verificar se está correto, validar, etc
+
+O GET costuma ter ao menos 2 parametros na função que está sendo utilizada para ele, que são request e Response
+
+request: exemplo do que seria o request é varias informações como cookies, identificação do navegador que está sendo usado, ID de quem está acessando, tudo referente ao processo inicial da requisição
+
+response: responsável pela resposta que so servidor vai dar ao usuário que fez a requisição
+
+Rotas dinamicas: são rotas que pode ter mais de um retorno, por exemplo um site chamado g1.com/noticias/assalto-na-cidade, 
+
+No caso, o noticias é uma unica rota e oq vem após elas são rotas dinamicas, não sendo necessário criar varias rotas para cada notificas pois seria inviavel 
+
+Abaixo, exemplo de codigo criando rota dinamica:
+
+import express, { Request, Response } from 'express'
+
+const server = express()
+
+server.get('/', (req: Request, res: Response) => {
+  res.send('Olá Mundo!')
+})
+
+server.get('/noticia/:slug', (req: Request, res: Response) => {
+  let slug: string = req.params.slug
+  res.send(`Noticia: ${slug}`)
+})
+
+server.listen(3000)
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+
+15 - Separando as rotas no seu lugar
+
+Para não ter varias rotas no arquivo do servidor, posso criar um arquivo de grupo de rotas, basta criar por exemplo uma pasta chamada routes dentro de src, de depois um arquivo.ts e dentro dela informar as rotas, e ao final usar a funcionalidade export para importar ela em outro arquivo
+
+Exemplo do conteudo do arquivo de rotas:
+
+import { Router, Request, Response } from "express";
+
+const router = Router()
+
+router.get('/', (req: Request, res: Response) => {
+  res.send('Olá mundo')
+})
+
+router.get('/', (req: Request, res: Response) => {
+  res.send('Hello World')
+})
+
+router.get('/', (req: Request, res: Response) => {
+  res.send('Hello there')
+})
+
+export default router
+
+Exemplo de conteudo do servidor que irá usar o arquivo de rotas:
+
+import express from 'express'
+import mainRoutes from './routes/index'
+
+const server = express()
+
+server.use(mainRoutes)
+
+server.listen(3000)
+
+Sobre .use:
+
+Posso ter varios arquivos de rotas, por exemplo uma rota relacionada a algo especifico.
+
+por exemplo caso exista um site chamado r7.com/noticia/assalto
+
+o noticia é uma rota que da acesso a outras rotas
+
+exemplo de como trabalhar dessa forma:
+
+criar um arquivo por exemplo painel.ts
+
+import { Router, Request, Response } from "express";
+
+const router = Router()
+
+router.get('/', (req: Request, res: Response) => {
+  res.send('Home do painel')
+})
+
+router.get('/', (req: Request, res: Response) => {
+  res.send('Lista de noticias')
+})
+
+
+export default router
+
+No arquivo do servidor:
+
+import painelRoutes from './routes/painel'
+
+server.use('/painel', painelRoutes) // O /painel define o caminho principal da rota
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+
+15 - Criando o 404 (página não encontra)
+
+quando o usuário digita uma rota, por exemplo r7.com/noticia/carro, mas não existe essa rota, normalmente retorna um erro chamado Cannot GET, porém o ideal não é que o usuário receba essa mensagem, por isso é criado o erro 404 pagina não encontrada 
+
+Abaixo é descrito como usar essa funcionalidade:
+
+criar a seguinte rota:
+
+server.use((req: Request, res: Response) => {
+  res.status(404).send('Página não encontrada')
+})
+
+quando o express não acha a rota especificada pelo usuário, ele cai nessa rota acima criada para msg de erro
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+
+17 - Pasta pública e arquivos estáticos
+
+public é uma pasta com acesso publico, com acesso externo, ou seja, é onde se encontra o material que será acessivel ao usuário
+
+normalmente é onde se encontra os arquivos css e javascript
+
+abaixo o procedimento para tornar a pasta public acessivel ao navegador, sem necessariamente criar uma rota
+
+no arquivo do servidor:
+
+import path from 'path' // biblioteca do express
+
+server.use(express.static(path.join(__dirname, '../public')))
+
+a importação da biblioteca path e o __dirname, servem para que seja encontrado a pasta public corretamente dentro da pasta do projeto, pois pode acontecer do navegador não encontrar a pasta, assim estamos especificando mais
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+
+18 - Introduzindo Template Engines
+
+O uso de template engines facilita a criação da camada de visualização de dados em uma aplicação. Com eles podemos utilizar recursos das linguagens de desenvolvimento para criar páginas HTML, como, estrutura de condição, de repetição, herança, etc.
+
+Basicamente ele facilitana utilização de uma pagina HTML no navegador para trabalharmos com dados criados no backend
+
+existe diversos como o Pug, mustach, egde (adonis e não express) 
+
+Neste curso iremos utilizar o mustache pois ele aceita uma estrutura html padrão
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+
+19 - Instalando e configurando o Mustache
+
+npm install mustache-express // instala a biblioteca do mustache
+
+npm install --save-dev @types/mustache-express // instala os types do mustache
+
+Dentro da pasta src é recomendado criar uma pasta chamada views, onde ficará nosso arquivo mustache
+
+o arquivo mustache é basicamente uma estrutura html, onde foi criado por exemplo nessa aula o seguinte corpo:
+
+<html>
+
+<head>
+  <title>Página Home</title>
+</head>
+
+<body>
+  <h1>Título da página</h1>
+  <hr>
+
+  Opa, tudo bem?
+</body>
+
+</html>
+
+dentro do nosso arquivo de rotas (index.ts em routes) foi criado a seguinte rota:
+
+router.get('/', (req: Request, res: Response) => {
+  res.render('home')
+})
+
+o render seria executando basicamente para renderizar algo, esse algo no caso é a página em mustache (Obs: ao apenas por o nome home do arquivo, já foi possível a rota localizar o mesmo)
+
+No navegador foi exibido a estrutura html (estrutura de informações pro usuário)
+
+Ao incluir mais informações no arquivo mustache e salvar, a pagina não irá modificar nada mesmo que seja atualizado a pagina manualmente, pois o nodemon por padrão monitora as alterações de arquivos ts e json, para que monitore também arquivos mustache, ao executa o servidor irei executar a seguinte forma:
+
+nodemon -e ts,json,mustache src/server.ts
+
+(obs: anteriormente era nodemon src/server.ts)
+
+OBS: nos dias de hoje uma opção melhor mais utilizada seria através do proprio react, o mustache está antigo mas vamos prosseguir para o entendimento do backend junto ao front
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+
+20 - Mustache: Exibindo informações
+
+A pagina em mustache feita da forma anterior é uma pagina estatica, mas posso fazer com que ser mais dinamica, por exemplo imagine que ao logar em um site ele de um olá para o usuário, por exemplo ao logar na home estar em algum lugar: Olá LucasSilbez
+
+Para isso posso criar uma variavel dentro da rota da home conforme abaixo
+
+router.get('/', (req: Request, res: Response) => {
+  res.render('home', {
+    user: 'Pedro'
+  })
+})
+
+E no mustache html onde havia apenas um Opa, tudo bem?:
+
+Opa, tudo bem {{user}}?
+
+importante ressaltar que o uso do mustache sempre é necessário o uso de dois {{}} (oq lembra um "mustache/bigode")
+
+Também posso utilizar objetos, conforme exemplo abaixo onde no inicio da rota crio o objeto e no render posso "pega-lo"
+
+router.get('/', (req: Request, res: Response) => {
+  let user = {
+    name: 'Lucas',
+    age: 90
+  }
+
+  res.render('home', {
+    user
+  })
+})
+
+já no corpo html: Opa, tudo bem {{user.name}}? ou Opa, tudo bem {{user.age}}?
+
+Posso usar inclusive como algo que lembra um pouco o template string dessa forma:
+Opa, tudo bem {{user.name}} você já tem {{user.age}} anos??
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+
+21 - Mustache: Exibição condicional
+
+Posso fazer condicionais, por exemplo no exemplo abaixo faço com que seja dado ima mensagem adicional ao usuário caso ele tenha mais de 50 anos:
+
+na rota:
+
+router.get('/', (req: Request, res: Response) => {
+  let age: number = 60
+  let showOld: boolean = false
+
+  if (age > 50) {
+    showOld = true
+  }
+
+  res.render('home', {
+    name: 'Lucas',
+    lastName: 'Bezerra',
+    showOld
+  })
+})
+
+no html/mustache:
+
+<html>
+
+<head>
+  <title>Página Home</title>
+</head>
+
+<body>
+  <h1>Título da página</h1>
+  <hr>
+
+  Opa, tudo bem {{user.name}}?
+  
+  {{#showOld}}
+    Como vai a vida?
+  {{/showOld}}
+
+</body>
+
+</html>
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+
+22 - Mustache: Exibindo listas (loop)
+
+é possível exibir arrays conforme exemplos abaixo
+
+na rota, dentro de render:
+
+products: [
+  { title: 'Produto X', price: 10 },
+  { title: 'Produto Y', price: 30 },
+  { title: 'Produto W', price: 40 }
+]
+
+no arquivo mustache html:
+
+<ul>
+    {{#products}}
+      <li>{{title}} - R$ {{price}} </li>
+    {{/products}}
+  </ul>
+
+caso seja uma lista simples e não de objetos:
+
+na rota, dentro de render:
+
+frases: [
+  'Teste 1'
+  'Teste 2'
+]
+
+no arquivo mustache html:
+
+<ul>
+  {{#frases}}
+    <li>{{.}}</li>
+  {{/frases}}
+
+</ul>
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+
+23 - Mustache: Else de listas
+
+Caso a lista ou qualquer outra coisa do render não seja encontrado, ou eu queira utilizar uma especie de else, posso fazer da seguinte forma:
+
+{{^frases}}
+Não ha frases hoje
+{{/frases}}
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+
+24 - Mustache: Conteúdo parcial
+
+Conteudo parcial é uma forma de fazer com que uma parte da pagina fique em um local especifico separado onde é possível estar reutilizando em varias paginas, por exemplo usar o mesmo header, e tbm pode facilitar caso seja necessário alterar um header padrão de varias paginas sem ter que ir uma a uma
+
+necessário criar uma pasta chamada partials, e dentro dela é necessário criar um arquivo mustache, por exemplo onde se encontram nesse projeto so arquivos footer.mustache e header.mustache
+
+em cada um deles criou o conteudo html, por exemplo no exemplo abaixo se encontra o conteudo do header.mustache
+
+<html>
+<head>
+  <title>Página Home</title>
+</head>
+<body>
+  <h1>Título da página</h1>
+  <hr>
+
+já na pagina padrão do conteudo, apago toda a parte do header que se encontrava nela por padrão, e incluo apenas o seguindo codigo:
+
+{{>partials/header}}
+
+depois disso posso por todo o restante do conteudo que quero por na pagina após o <hr>
+
+Obs: as informações das rotas ficaram conforme abaixo, onde foi alterado de res.send para res.render
+
+router.get('/', (req: Request, res: Response) => {
+  res.render('Contato')
+})
+
+router.get('/', (req: Request, res: Response) => {
+  res.render('Sobre')
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+
+25 - Recebendo dados na URL 1
+
+na situação desta aula foi criado uma pagina chamada nome, onde existe um input que posso escrever um nome e enviar, mas o dado referente ao nome não irá apresentar nada ao usuário porém será apresentado através da url que ficará dessa forma: http://localhost:3000/nome?nome=Lucas
+
+com isso, por baixo dos panos posso trabalhar com esse dado considerando que este input é uma variavel e trabalhar com ela conforme exemplo abaixo:
+
+
+conteudo da rota:
+
+router.get('/nome', (req: Request, res: Response) => {
+
+  let nome: string = req.query.nome as string // nessesário o as string para reforçar para o typescript q é uma string
+
+  // o typescript tbm ficará informando que a variavel nome é declarada mas não é usada, sendo necessário inclui-la no render conforme abaixo
+
+  res.render('pages/nome', {
+    nome
+  })
+})
+
+conteudo da pagina nome:
+
+{{>partials/header}}
+
+<h2>Qual seu nome?</h2>
+<form method='GET'>
+  <input type="text" name="nome" placeholder="Digite seu nome" />
+  <input type="submit" value="Enviar" />
+</form>
+
+
+{{#nome}}
+<hr>
+Opa {{nome}}, tudo bem?
+{{/nome}}
+
+{{>partials/footer}}
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+
+26 - Recebendo dados na URL 2
+
+No código abaixo o usuário informa seu ano de nascimento e o site informa a sua idade
+
+rota (index):
+
+router.get('/idade', (req: Request, res: Response) => {
+  let mostrarIdade: boolean = false
+  let idade: number = 0
+
+  if (req.query.ano) {
+    let anoNascimento: number = parseInt(req.query.ano as string)
+    let anoAtual: number = new Date().getFullYear()
+    idade = anoAtual - anoNascimento
+    mostrarIdade = true
+  }
+
+  res.render('pages/idade', {
+    idade,
+    mostrarIdade
+  })
+
+})
+
+idade.mustache:
+
+{{>partials/header}}
+
+<h2>Qual ano você nasceu??</h2>
+<form method='GET'>
+  <input type="number" name="ano" placeholder="Digite o ano de nascimento" />
+  <input type="submit" value="Enviar" />
+</form>
+
+{{#mostrarIdade}}
+Você tem {{idade}} anos
+{{/mostrarIdade}}
+
+{{>partials/footer}}
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+
+27 - Recebendo dados via POST
+
+fazendo o envio de dados via url, em algumas situações pode não ser usual pois por exemplo se o usuário envia uma senha ela irá aparece na url, e não queremos isso, no metodo de envio via post isso não acontece pois os dados ficam armazenado do body da rota
+
+abaixo exemplo onde o site mostra a idade da pessoa ao enviar o ano, via post
+
+mustache:
+
+{{>partials/header}}
+
+<h2>Qual ano você nasceu??</h2>
+<form method='POST' action="/idade-resultado">
+  <input type="number" name="ano" placeholder="Digite o ano de nascimento" />
+  <input type="submit" value="Enviar" />
+</form>
+
+{{#mostrarIdade}}
+Você tem {{idade}} anos
+{{/mostrarIdade}}
+
+{{>partials/footer}}
+
+rotas:
+
+router.get('/idade', (req: Request, res: Response) => {
+  res.render('pages/idade', {
+
+  })
+
+})
+
+router.post('/idade-resultado', (req: Request, res: Response) => {
+  let mostrarIdade: boolean = false
+  let idade: number = 0
+
+  if (req.body.ano) {
+    let anoNascimento: number = parseInt(req.body.ano as string)
+    let anoAtual: number = new Date().getFullYear()
+    idade = anoAtual - anoNascimento
+    mostrarIdade = true
+  }
+
+  res.render('pages/idade', {
+    idade,
+    mostrarIdade
+  })
+})
+
+Obs: a funcionalidade action dentro do html de post é feita para que ao atualizar a pagina não seja apresentado um alerta para o usuário confirmando se quer realmente atualizar o formulario
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+
+28 - Introdução à MVC
+
+É um conceito
+
+MVC é o acrônimo de Model-View-Controller é um padrão de projeto de software, ou padrão de arquitetura de software formulado na década de 1970, focado no reuso de código e a separação de conceitos em três camadas
+
+M = Model 
+V = View 
+C = Controller 
+
+-- Separar cada arquivo no seu quadrado
+-- Juntar tudo para rodar no sistema
+
+facilita a troca de informações entre a interface do usuário aos dados no banco, fazendo com que as respostas sejam mais rápidas e dinâmicas.
+
+Por que usar MVC? Porque é um verdadeiro padrão de projeto (design pattern) e torna fácil a manutenção da sua aplicação, com pacotes modulares de rápido desenvolvimento. Elaborar tarefas divididas entre models, views e controllers faz com que sua aplicação fique leve e independente.
+
+● Model A responsabilidade dos models é representar o negócio. Também é responsável pelo acesso e manipulação dos dados na sua aplicação.
+
+● View A view é responsável pela interface que será apresentada, mostrando as informações do model para o usuário.
+
+● Controller É a camada de controle, responsável por ligar o model e a view, fazendo com que os models possam ser repassados para as views e vice-versa.
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+
+29 - Trabalhando com Controllers
+
+Foi organizado o controller que faz parte do conceito informado na aula anterior, onde no arquivo index de rotas ele irá ficar responsável apenas por importar as funções de cada rota, sem ter linhas de codigo de fato conforme exemplo abaixo:
+
+import { Router } from "express";
+
+import * as HomeController from '../controllers/homeController'
+import * as InfoController from '../controllers/infoController'
+import * as UserController from '../controllers/userController'
+
+const router = Router()
+
+router.get('/', HomeController.home)
+
+router.get('/contato', InfoController.contato)
+
+router.get('/sobre', InfoController.sobre)
+
+router.get('/nome', UserController.nome)
+
+router.get('/idade', UserController.idadeForm)
+
+router.post('/idade-resultado', UserController.idadeAction)
+
+export default router
+
+as linhas de codigos de cada pagina foi criada em uma pasta chamada controllers onde foi criado um arquivo para cada rota 
+
+Abaixo um exemplo de uma delas:
+
+import { Request, Response } from 'express'
+
+export const contato = (req: Request, res: Response) => {
+  res.render('pages/contato')
+}
+
+export const sobre = (req: Request, res: Response) => {
+  res.render('pages/sobre')
+}
+
+o codigo acima se refere a rota de info, onde após ser feita é importada no index de rotas que se encontra do exemplo anterior dessa mesma anotação de aula (imagine a ordem dos exemplos invertidas)
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+
+30 - Trabalhando com Models 1
+
+Foi criado uma pasta models onde haverá arquivo em type script com o nome em pascal case, conforme exemplo do Product.ts
+
+Dentro dele será armazenado por exemplo os itens que será apresentado, os resultados, por exemplo algo que será buscado do banco de dados.
+
+Como até o momento não estámos trabalhando com banco de dados, foi usado o exemplo de aulas anteriores onde foi criado uma lista de produtos e preços, que é armazenado dentro de uma variaveç simulando um banco de dados
+
+abaixo exemplo de como ficou o arquivo da pasta models chamado Product.ts, até o momento dessa aula:
+
+type Product = {
+  title: string,
+  price: number
+}
+
+const data: Product[] = [
+  { title: 'Produto X', price: 10 },
+  { title: 'Produto Y', price: 30 },
+  { title: 'Produto W', price: 40 }
+]
+
+export const Product = {
+  getAll: (): Product[] => {
+    return data
+  }
+}
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+
+31 - Trabalhando com Models 2
+
+foi criado uma nova função dentro da variavel product, e ela faz com que seja criado no models e pegue para ser apresentado apenas um dos tipos do dados da lista/banco, por exemplo neste caso será apresentado apenas os produtos que tenha o preço acima de 12 reais, para fazer isso foi feito conforme abaixo:
+
+no models:
+
+export const Product = {
+  getAll: (): Product[] => {
+    return data
+  },
+  getFromPriceAfter: (price: number): Product[] => {
+    return data.filter(item => item.price >= price)
+  }
+}
+
+em controller dentro da variavel home:
+
+let list = Product.getAll()
+  let expensiveList = Product.getFromPriceAfter(12)
+
+  res.render('pages/home', {
+    name: 'Lucas',
+    lastName: 'Bezerra',
+    showOld,
+    products: list,
+    expensives: expensiveList,
+    frases: []
+  })
+
+  em view dentro do arquivo mustache
+
+  <h2>Produtos a partir de 12 reais</h2>
+
+<ul>
+  {{#expensives}}
+  {{>partials/productItem}}
+  {{/expensives}}
+</ul>
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+
+32 - Variáveis de ambiente
+
+env é um comando Unix. É utilizado para imprimir uma lista de variáveis de ambiente ou para executar outro utilitário num ambiente alterado sem necessidade de modificar o ambiente existente. Utilizando env, as variáveis podem ser alteradas ou removidas.
+
+Quando iniciamos uma aplicação no NodeJS, ela se torna um processo do sistema. As informações sobre este processo podem ser acessadas na propriedade global process e uma das propriedades deste objeto é o env . Portanto, podemos acessar os dados do objeto através do comando process.
+
+No caso, conforme exemplo da aula anteriormente estavamos trabalhando informando o numero da rota no arquivo server.ts, porém pode haver situações diversas em que isso pode atrapalhar de alguma forma, principalmente quando o sistema tiver no ar com uma rota diferente, por isso é criado um arquivo no projeto chamado .env, nele posso criar uma variavel global em que será armazenado o numero da rota, podendo ser alterado apenas nela caso seja necessário alterar. 
+
+Onde ficaria o numero da rota no arquivo server agora irá ficar uma funcionalidade que chama as informações do .env
+
+Segue exemplo abaixo:
+
+Primeiro é necessário instalar a biblioteca dotenv com o comando:
+
+npm install dotenv
+
+Depois é criado um arquivo fora de qualquer pasta especifica, dentro do projeto chamado .env
+
+No arquivo .env:
+
+PORT=4000
+
+No arquivo server.ts:
+
+import dotenv from 'dotenv'
+
+dotenv.config() // importante issa função ser antes das rotas 
+
+server.listen(process.env.PORT) // aqui ficava o numero da rota 
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+01 - Introdução ao uso de banco pelo Node
+
+SERVIDOR = Software que é o próprio banco de dados 
+CLIENTE = Software que usa o servidor, ou seja, usa o banco de dados 
+
+Todo banco de dados deve possibilitar:
+
+> INSERIR DADOS 
+> LER DADOS 
+> ALTERAR DADOS 
+> EXCLUIR DADOS 
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+02 - MySQL vs PostgreSQL
+
+Ambos são open-source, mas o PostgreSQL é mais aberto pois o MySQL pertence a oracle que existe suas limitações de uso 
+
+Ambos funcionam em qualquer sistema operacional (os 3 principais) 
+
+Ambos suportam as principais linguagens de programação 
+
+MySQL não é case-sensitive 
+
+PostgreSQL é case-sensitive 
+
+PERFORMANCE:
+
+PostgreSQL tende a ser mais rapido em situações onde tem um grande volume ou consultas complexas 
+
+MySQL tende a ser mais rapido em pequenos volumes e consultas simples 
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+
+12 - O que é ORM?
+
+ORM: Object relational mapper 
+Mapeamento objeto relacional 
+
+é uma técnica para aproximar o paradigma de desenvolvimento de aplicações orientadas a objetos ao paradigma do banco de dados relacional.
+
+essa funcionalidade basicamente criar uma "copia" do banco de dados para meu codigo para que ele saiba interpretar o banco de dados 
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+13 - Introdução ao Sequelize
+
+Sequelize é uma biblioteca que trabalha usando promise, é uma ORM e funciona em Node 
+
+comando para instalar npm install --save sequelize 
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+14 - Sequelize e Typescript
+
+npm install --save-dev @types/sequelize
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+15 - Conectando ao banco MySQL
+
+No arquivo .env: 
+
+MYSQL_DB=teste
+MYSQL_USER=root
+MYSQL_PASSWORD=
+MYSQL_PORT=3306
+
+é necessário criar um arquivo TS onde ficará a variavel de conexão, e para uma boa organização foi colocado este arquivo dentro da pasta instances
+
+nome do arquivo: mysql.ts, conteudo: 
+
+import { Sequelize } from "sequelize"; // importando a biblioteca sequelize
+import dotenv from 'dotenv' // importando a biblioteca dotenv para utilizar as portas do arquivo .env
+
+dotenv.config() // chamando a função dotenv
+
+export const sequelize = new Sequelize( /* criando a variavel que será exportada, e dentro dela é criado os parametros e os parametros são basicamente as informações do SQL no .env.*/
+  process.env.MYSQL_DB as string,
+  process.env.MYSQL_USER as string,
+  process.env.MYSQL_PASSWORD as string,
+  {
+    dialect: 'mysql',
+    port: parseInt(process.env.MYSQL_PORT as string) /* obs: aqui o TS esperava um numeto inteiro mesmo que o numero da porta (3306) seja um numero em formato de string, por isso foi necessário o parseInt para que retorne um number de fato e depois usado o as string */
+  }
+)
+
+Para testar se a conexão deu certo: 
+
+no arquivo homeController:
+
+import { sequelize } from '../instances/mysql';
+
+dentro da arrow function home foi Introduzindo o async/await e um try/catch: 
+
+export const home = async (req: Request, res: Response) => {
+  try {
+      await sequelize.authenticate()
+      console.log('Conexão estabelecida com sucesso!')
+  } catch (error) {
+      console.log('Deu problema: ', error)
+  }
+
+
+ao executar o servidor e atualizar a pagina home no navegador, no terminal retornou a mensagem Conexão estabelecida com sucesso 
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+17 - Models no Sequelize + Typescript
+
+nessa aula foi criado um model que irá lidar com a tabela de usuários (tabela users criada anteriormente no SQL) 
+
+Segue abaixo codigo usado n arquivo User.ts criado na pasta models:
+
+import { Model, DataTypes } from 'sequelize'
+import { sequelize } from '../instances/mysql'
+
+export interface UserInstance extends Model {
+  id: number,
+  name: string,
+  age: number
+}
+
+export const User = sequelize.define<UserInstance>('User', {
+  id: {
+    primaryKey: true,
+    type: DataTypes.INTEGER
+  },
+  name: {
+    type: DataTypes.STRING
+  },
+  age: {
+    type: DataTypes.INTEGER,
+    defaultValue: 18
+  }
+}, {
+  tableName: 'users',
+  timestamps: false
+})
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+18 - Consultando dados do Model
+
+Nessa aula foi possível pegar os dados do banco de dados SQL da seguinte forma: 
+
+em homeController.ts:
+
+export const home = async (req: Request, res: Response) => {
+  let users = await User.findAll()
+
+  ...
+
+  res.render('pages/home', {
+    name: 'Bonieky',
+    lastName: 'Lacerda',
+    showOld,
+    products: list,
+    expensives: expensiveList,
+    frasesDoDia: [],
+    users // adicionado
+
+em home.mustache:
+
+<h2>Usuários banco de dados</h2>
+<ul>
+    {{#users}}
+    <li>{{name}} - Idade: {{age}}</li>
+    {{/users}}
+</ul>
+
+assim, foi buscaco os nomes, idade e id do banco e apresentado na view apenas nome e idade
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+19 - Tipos de consulta 1
+
+na função findAll() da variavel user, é possível incluir algumas funcionalidade como por exemplo:
+
+let users = await User.findAll({
+  attributes: { exclude: ['id', 'age'] } // está faz com que seja buscado no banco de dados apenas o nome, excluindo id e age 
+})
+
+Obs: exclui de dado a busca do banco, sabemos que podemos simplismente não declarar o item na view mas desta forma tbm não irá buscar, util caso aquele usuário por exemplo tenha dezenas de itens e eu não quero puxar todos por questões de desempenho já que não vou usar todos na ocasião
+
+
+let users = await User.findAll({
+  where: { name: 'Lucas', age: 30 } // faz uma busca dos itens com aquela item/chave especifico, tras todas as informações das pessoas com o nome Lucas e idade 30 do banco de dados 
+
+
+  
+let users = await User.findAll({ // ao contrario do exemplo acima, esse tras por exemplo todos com o nome Lucas OU idade 50
+    where: {
+        [Op.or]: [
+            { name: 'Lucas' },
+            { age: 50 }
+        ]
+    }
+})
+
+Obs: necessário import { Op } from 'sequelize'
+
+
+let users = await User.findAll({ // forma simplificada da funcionalidade acima 
+  where: {
+      age: [50, 90]
+  }
+})
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+20 - Tipos de consulta 2
+
+let users = await User.findAll({
+  where: {
+      age: {
+          [Op.gt]: 40, // > 40, busca todos igual a 40
+          [Op.gte]: 40, // >=40, busca maior ou igual a 40
+          [Op.lt]: 40, // < 40, menor que 40
+          [Op.lte]: 40 // <= 40}, menor ou igual a 40
+      }
+  }
+})
+
+[Op.Between]: [40, 100] // todos que tem entre 40 e 100 anos 
+[Op.notBetween]: [40, 100] // todos que não tem entre 40 e 100 anos 
+[Op.in]: [50, 10] // todos que tem 50 e 10
+[Op.notIn]: [50, 10] // todos que não tem 50 e 10 
+
+
+let users = await User.findAll({
+  where: {
+      name: {
+          [Op.like]: 'lu%' // busca todos que comecem com a letra lu 
+      }
+  }
+})
+
+Exemplo da func Op.like em um search, mto usado no dia a dia (posso usar o search de um input de usuario)
+
+let searchName: string = 'Lu'
+let users = await User.findAll({
+  where: {
+      name: {
+          [Op.like]: `%${searchName}%`
+      }
+  }
+})
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+21 - Ordenando resultados
+
+let users = await User.findAll({
+  where: {
+      age: {
+          [Op.gte]: 18
+      }
+  },
+  order: [
+      ['name', 'ASC'] // dessa forma o 'ASC' faz com que fique em ordem crescente (DESC faz a ordem decrescente)
+  ]
+})
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+22 - Limitando resultados
+
+let users = await User.findAll({
+  where: {
+      age: {
+          [Op.gte]: 18
+      }
+  },
+  offset: 1, // esse funcionalidade faz com que eu possa especificar quantos item irá pular para ser exibido
+  limit: 1 // essa faz com que eu limite a quantidade de items
+})
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+23 - Inserindo dados com Sequelize
+
+Aqui é possível inserir dados no banco de dados através do javascript, de duas formas 
+
+build +save:
+
+export const home = async (req: Request, res: Response) => {
+  const user = User.build({
+      name: 'Fulaninho'
+  })
+  await user.save() // essa função faz com que o usuário criado em user seja enfim enviado para o banco
+
+create: 
+
+const user = await User.create({
+  name: 'Ciclano',
+  age: 39
+})
+
+// dessa forma não é necessário chamar uma função para confirmar o envio do dado, ele já é enviado na construção dele 
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+
+24 - Exercício: Criar usuários novos
+
+Exercício do terceiro módulo de Node.Js
+
+*******************home.mustache********************
+
+<fieldset>
+    <legend>Adicionar novo usuário</legend>
+    <form method="POST" action="/novousuario">
+        <input type="text" name="name" placeholder="Digite seu nome" /><br/><br/>
+        <input type="number" name="age" placeholder="Digite sua idade" /><br/><br/>
+        <input type="submit" value="Inserir usuário" />        
+    </form>
+</fieldset>
+
+
+*******************homeController.ts********************
+
+export const CreateNewUser = async (req:Request, res: Response) => {
+    let newUserName: string = req.body.name;
+    let newUserAge: number = parseInt(req.body.age);
+
+    if(newUserName) {
+        let firstLetterUpperCase = newUserName[0].toUpperCase();        
+        const newUser = User.build({
+            name: firstLetterUpperCase + newUserName.slice(1),
+            age: newUserAge
+        });
+        await newUser.save();                
+    }
+    res.redirect('/');
+}
+
+
+
+*******************index.ts********************
+
+router.post('/novousuario', HomeController.CreateNewUser);
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+25 - Atualizando dados com Sequelize 1
+
+export const home = async (req: Request, res: Response) => {
+
+  await User.update({ age: 18 }, {
+      where: {
+          age: {
+              [Op.lt]: 18
+          }
+      }
+  })
+
+o await acima faz com que todos os itens onde a idade é menor que 18, seja atualizado para 18
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+
+26 - Atualizando dados com Sequelize 2
+
+Outra forma de atualizar os dados do banco de dados com sequelize 
+
+let results = await User.findAll({where: {id: 7}})
+    if(results.length > 0) {
+        let usuario = results[0]
+
+        usuario.name = 'Testador'
+        usuario.age = 18
+        
+        await usuario.save()
+    }
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+
+27 - Deletando dados com Sequelize
+
+forma de deletar items com uma determinada condição, no caso abaixo todos com menos de 18 anos
+
+await User.destroy({
+  where: {
+      age: {
+          [Op.lte]: 18
+      }
+  }
+})
+
+
+let results = await User.findAll({ where: { name: 'Ciclano' } })
+    if (results.length > 0) {
+        let usuario = results[0]
+        await usuario.destroy()
+    }
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+
+28 - Exercício: Alterações nos usuários da lista
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+
+29 - Métodos Finder
+
+Forma de encontra um usuário especifico: 
+
+homeController:
+
+let usuario = await User.findOne({
+  where: {
+      id: 1
+  }
+})
+
+if (usuario) {
+  console.log(`O usuário ${usuario.name} foi encontrado`) // condicional criada para confirmar que encontrou o usuário
+} else {
+  console.log('Usuário não encontrado')
+}
+
+
+let usuario = await User.findByPk(1) // forma alternativa de encontrar por exemplo o id, chave primaria que no caso é o ID 
+
+Ainda na função home, o código abaixo procura um dado/usuário no banco, e se não encontrar ele irá criar o usuário no banco 
+
+const [usuario, created] = await User.findOrCreate({
+  where: { name: 'Bonieky' },
+  defaults: {
+      age: 80
+  }
+})
+
+if (created) {
+  console.log('Usuário criado com sucesso!')
+} else {
+  console.log('Achamos o usuários')
+}
+console.log('NOME: ', usuario.name)
+
+
+Obs: necessário adicionar: autoIncrement: true, // em User.ts no objeto id 
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+
+30 - Métodos Getter/Setter
+
